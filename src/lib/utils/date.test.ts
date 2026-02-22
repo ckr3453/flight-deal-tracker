@@ -1,26 +1,26 @@
 import { describe, it, expect } from "vitest";
 import {
-  formatDateForTequila,
+  formatDateForApi,
   getSearchDateRange,
   getDaysFromNow,
   convertNightsToDateRange,
   getRecentDaysRange,
 } from "./date";
 
-describe("formatDateForTequila", () => {
-  it("Date를 DD/MM/YYYY 포맷으로 변환한다", () => {
+describe("formatDateForApi", () => {
+  it("Date를 YYYY-MM-DD 포맷으로 변환한다", () => {
     const date = new Date(2026, 1, 22); // 2026-02-22
-    expect(formatDateForTequila(date)).toBe("22/02/2026");
+    expect(formatDateForApi(date)).toBe("2026-02-22");
   });
 
   it("선행 0을 포함한다 (1월 5일)", () => {
     const date = new Date(2026, 0, 5); // 2026-01-05
-    expect(formatDateForTequila(date)).toBe("05/01/2026");
+    expect(formatDateForApi(date)).toBe("2026-01-05");
   });
 
   it("12월 31일을 올바르게 변환한다", () => {
     const date = new Date(2026, 11, 31);
-    expect(formatDateForTequila(date)).toBe("31/12/2026");
+    expect(formatDateForApi(date)).toBe("2026-12-31");
   });
 });
 
@@ -28,15 +28,15 @@ describe("getSearchDateRange", () => {
   it("오늘부터 N일 후까지의 범위를 반환한다", () => {
     const now = new Date(2026, 1, 22);
     const { dateFrom, dateTo } = getSearchDateRange(30, now);
-    expect(dateFrom).toBe("22/02/2026");
-    expect(dateTo).toBe("24/03/2026");
+    expect(dateFrom).toBe("2026-02-22");
+    expect(dateTo).toBe("2026-03-24");
   });
 
   it("기본값은 오늘부터 60일 후", () => {
     const now = new Date(2026, 0, 1);
     const { dateFrom, dateTo } = getSearchDateRange(60, now);
-    expect(dateFrom).toBe("01/01/2026");
-    expect(dateTo).toBe("02/03/2026");
+    expect(dateFrom).toBe("2026-01-01");
+    expect(dateTo).toBe("2026-03-02");
   });
 });
 
@@ -60,15 +60,15 @@ describe("convertNightsToDateRange", () => {
   it("3박4일 → 출발일~3일 후 귀국일을 반환한다", () => {
     const departure = new Date(2026, 1, 22);
     const { dateFrom, dateTo } = convertNightsToDateRange(3, departure);
-    expect(dateFrom).toBe("22/02/2026");
-    expect(dateTo).toBe("25/02/2026");
+    expect(dateFrom).toBe("2026-02-22");
+    expect(dateTo).toBe("2026-02-25");
   });
 
   it("1박2일도 올바르게 처리한다", () => {
     const departure = new Date(2026, 11, 31);
     const { dateFrom, dateTo } = convertNightsToDateRange(1, departure);
-    expect(dateFrom).toBe("31/12/2026");
-    expect(dateTo).toBe("01/01/2027");
+    expect(dateFrom).toBe("2026-12-31");
+    expect(dateTo).toBe("2027-01-01");
   });
 });
 

@@ -1,12 +1,12 @@
 import type { FlightResult } from "@/types/flight";
-import type { TequilaFlight } from "@/types/tequila";
-import { searchFlights } from "./tequila";
+import type { SerpApiFlightResult } from "@/types/serpapi";
+import { searchFlights } from "./serpapi";
 
 interface SearchParams {
   flyFrom: string;
   flyTo: string;
-  dateFrom: string;
-  dateTo: string;
+  dateFrom: string; // YYYY-MM-DD
+  dateTo: string; // YYYY-MM-DD
   flightType?: "round" | "oneway";
   nightsFrom?: number;
   nightsTo?: number;
@@ -15,43 +15,50 @@ interface SearchParams {
   infants?: number;
 }
 
-function parseDuration(duration: string): number {
-  const hours = duration.match(/(\d+)h/)?.[1] ?? "0";
-  const minutes = duration.match(/(\d+)m/)?.[1] ?? "0";
-  return parseInt(hours) * 60 + parseInt(minutes);
-}
-
-function normalizeFlightResult(flight: TequilaFlight): FlightResult {
-  const returnRoute = flight.route.length > 1 ? flight.route[flight.route.length - 1] : undefined;
+function normalizeFlightResult(
+  flight: SerpApiFlightResult,
+  flyFrom: string,
+  flyTo: string
+): FlightResult {
+  const firstLeg = flight.flights[0];
+  const lastLeg = flight.flights[flight.flights.length - 1];
 
   return {
     price: flight.price,
-    airline: flight.airlines[0],
-    flyFrom: flight.route[0].flyFrom,
-    flyTo: flight.route[0].flyTo,
-    departureDate: flight.local_departure,
-    returnDate: returnRoute?.local_departure,
-    bookingUrl: flight.deep_link,
+    airline: firstLeg.airline,
+    flyFrom: firstLeg.departure_airport.id || flyFrom,
+    flyTo: lastLeg.arrival_airport.id || flyTo,
+    departureDate: firstLeg.departure_airport.time,
+    returnDate: undefined, // 왕복 귀국편은 별도 요청 필요
+    bookingUrl: `https://www.google.com/travel/flights?q=${flyFrom}+to+${flyTo}`,
     duration: {
-      departure: parseDuration(flight.fly_duration),
-      return: flight.return_duration ? parseDuration(flight.return_duration) : undefined,
+      departure: flight.total_duration,
+      return: undefined,
     },
   };
 }
 
 export async function searchFlightsNormalized(params: SearchParams): Promise<FlightResult[]> {
+  const isRoundTrip = params.flightType !== "oneway";
+
+  // SerpApi Google Flights는 특정 날짜로 검색
+  // dateFrom을 출발일로 사용
   const response = await searchFlights({
-    fly_from: params.flyFrom,
-    fly_to: params.flyTo,
-    date_from: params.dateFrom,
-    date_to: params.dateTo,
-    flight_type: params.flightType,
-    nights_in_dst_from: params.nightsFrom,
-    nights_in_dst_to: params.nightsTo,
+    departure_id: params.flyFrom,
+    arrival_id: params.flyTo,
+    outbound_date: params.dateFrom,
+    return_date: isRoundTrip ? params.dateTo : undefined,
+    type: isRoundTrip ? 1 : 2,
     adults: params.adults,
     children: params.children,
-    infants: params.infants,
+    infants_in_seat: params.infants,
   });
 
-  return response.data.map(normalizeFlightResult);
+  if (response.error) {
+    throw new Error(`Google Flights 검색 오류: ${response.error}`);
+  }
+
+  const allFlights = [...(response.best_flights ?? []), ...(response.other_flights ?? [])];
+
+  return allFlights.map((f) => normalizeFlightResult(f, params.flyFrom, params.flyTo));
 }

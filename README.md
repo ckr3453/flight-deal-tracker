@@ -20,7 +20,7 @@
 | 프레임워크 | Next.js 16 (App Router, TypeScript) |
 | 스타일링 | Tailwind CSS v4 |
 | DB | Turso (프로덕션) / SQLite (로컬) + Prisma 7 |
-| 항공권 API | Tequila by Kiwi.com |
+| 항공권 API | SerpApi (Google Flights) |
 | 이메일 | Resend + react-email |
 | 인증 | NextAuth.js v5 (Google OAuth) |
 | 스케줄링 | Vercel Cron + GitHub Actions |
@@ -53,7 +53,7 @@ cp .env.example .env.local
 |------|------|--------|
 | `DATABASE_URL` | DB URL (로컬: `file:./prisma/dev.db`) | — |
 | `TURSO_AUTH_TOKEN` | Turso 인증 토큰 (프로덕션) | [Turso](https://turso.tech) |
-| `TEQUILA_API_KEY` | 항공편 검색 API 키 | [Tequila](https://tequila.kiwi.com) |
+| `SERPAPI_API_KEY` | 항공편 검색 API 키 (Google Flights) | [SerpApi](https://serpapi.com) |
 | `RESEND_API_KEY` | 이메일 발송 API 키 | [Resend](https://resend.com) |
 | `CRON_SECRET` | Cron 엔드포인트 인증용 시크릿 | 임의 생성 |
 | `NEXTAUTH_SECRET` | NextAuth 세션 암호화 시크릿 | 임의 생성 |
@@ -112,7 +112,7 @@ src/
 │   └── ui/                    # 공통 UI 컴포넌트
 ├── constants/                 # 공항, 지역 상수
 ├── lib/
-│   ├── api/                   # Tequila API 클라이언트
+│   ├── api/                   # SerpApi (Google Flights) 클라이언트
 │   ├── email/                 # Resend 래퍼 + react-email 템플릿
 │   ├── services/              # 비즈니스 로직 (모니터, 가격추적, 딜감지, 알림)
 │   ├── utils/                 # 날짜, 가격 유틸리티

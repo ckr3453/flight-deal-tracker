@@ -9,7 +9,7 @@
 ## 배포 현황
 - **호스팅**: Vercel
 - **DB**: Turso (프로덕션) / SQLite (로컬)
-- **상태**: 배포 완료, Tequila API 키 미발급 (항공편 검색 미동작)
+- **상태**: 배포 완료
 
 ## 기술 스택
 | 영역 | 선택 |
@@ -17,12 +17,12 @@
 | 프레임워크 | Next.js 16 (App Router, TypeScript) |
 | 스타일링 | Tailwind CSS v4 |
 | DB | Turso (프로덕션) / SQLite + better-sqlite3 (로컬) + Prisma 7 |
-| 항공권 API | Tequila by Kiwi.com |
+| 항공권 API | SerpApi (Google Flights) — 월 100건 무료 |
 | 이메일 | Resend + react-email |
 | 인증 | NextAuth.js v5 (Google OAuth) |
 | 스케줄링 | Vercel Cron (1일 1회) + GitHub Actions (6시간마다) |
 | 배포 | Vercel |
-| 테스트 | Vitest + Testing Library (72개 테스트) |
+| 테스트 | Vitest + Testing Library (71개 테스트) |
 
 ## 데이터 모델
 - **User**: NextAuth 사용자 (role: admin/user, isApproved)
@@ -63,7 +63,7 @@ DATABASE_URL="libsql://..." TURSO_AUTH_TOKEN="..." node scripts/turso-push.mjs
 ```
 DATABASE_URL=          # Turso: libsql://... / 로컬: file:./prisma/dev.db
 TURSO_AUTH_TOKEN=      # Turso 인증 토큰 (프로덕션만)
-TEQUILA_API_KEY=       # Tequila (Kiwi.com) API 키
+SERPAPI_API_KEY=        # SerpApi API 키 (Google Flights)
 RESEND_API_KEY=        # Resend 이메일 API 키
 CRON_SECRET=           # Cron 인증 시크릿
 NEXTAUTH_SECRET=       # NextAuth 시크릿

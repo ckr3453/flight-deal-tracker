@@ -1,12 +1,15 @@
 /**
- * Date → Tequila API용 DD/MM/YYYY 포맷
+ * Date → YYYY-MM-DD 포맷 (Google Flights API용)
  */
-export function formatDateForTequila(date: Date): string {
-  const dd = String(date.getDate()).padStart(2, "0");
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
+export function formatDateForApi(date: Date): string {
   const yyyy = date.getFullYear();
-  return `${dd}/${mm}/${yyyy}`;
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
 }
+
+/** @deprecated formatDateForApi 사용 */
+export const formatDateForTequila = formatDateForApi;
 
 /**
  * 기준일로부터 N일 후 검색 범위 반환
@@ -16,8 +19,8 @@ export function getSearchDateRange(
   from: Date = new Date()
 ): { dateFrom: string; dateTo: string } {
   return {
-    dateFrom: formatDateForTequila(from),
-    dateTo: formatDateForTequila(getDaysFromNow(daysAhead, from)),
+    dateFrom: formatDateForApi(from),
+    dateTo: formatDateForApi(getDaysFromNow(daysAhead, from)),
   };
 }
 
@@ -31,7 +34,7 @@ export function getDaysFromNow(days: number, from: Date = new Date()): Date {
 }
 
 /**
- * n박(n+1)일 → [출발일, 귀국일] 반환 (Tequila DD/MM/YYYY 포맷)
+ * n박(n+1)일 → [출발일, 귀국일] 반환 (YYYY-MM-DD 포맷)
  */
 export function convertNightsToDateRange(
   nights: number,
@@ -39,8 +42,8 @@ export function convertNightsToDateRange(
 ): { dateFrom: string; dateTo: string } {
   const returnDate = getDaysFromNow(nights, departureDate);
   return {
-    dateFrom: formatDateForTequila(departureDate),
-    dateTo: formatDateForTequila(returnDate),
+    dateFrom: formatDateForApi(departureDate),
+    dateTo: formatDateForApi(returnDate),
   };
 }
 

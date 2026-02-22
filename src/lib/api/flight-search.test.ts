@@ -1,135 +1,144 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { searchFlightsNormalized } from "./flight-search";
-import * as tequila from "./tequila";
+import * as serpapi from "./serpapi";
 
-vi.mock("./tequila");
+vi.mock("./serpapi");
 
-const mockSearchFlights = vi.mocked(tequila.searchFlights);
+const mockSearchFlights = vi.mocked(serpapi.searchFlights);
 
 beforeEach(() => {
   vi.clearAllMocks();
 });
 
 describe("searchFlightsNormalized", () => {
-  it("Tequila 결과를 FlightResult[]로 변환한다", async () => {
+  it("SerpApi 결과를 FlightResult[]로 변환한다", async () => {
     mockSearchFlights.mockResolvedValueOnce({
-      search_id: "abc",
-      data: [
+      search_metadata: { status: "Success" },
+      best_flights: [
         {
-          id: "f1",
-          price: 350000,
-          airlines: ["KE"],
-          route: [
+          flights: [
             {
-              flyFrom: "ICN",
-              flyTo: "NRT",
-              cityFrom: "Seoul",
-              cityTo: "Tokyo",
-              local_departure: "2026-03-01T10:00:00.000Z",
-              local_arrival: "2026-03-01T12:30:00.000Z",
-              airline: "KE",
+              departure_airport: { name: "인천국제공항", id: "ICN", time: "2026-03-01 10:00" },
+              arrival_airport: { name: "나리타국제공항", id: "NRT", time: "2026-03-01 12:30" },
+              duration: 150,
+              airplane: "A321",
+              airline: "대한항공",
+              airline_logo: "https://logo.url",
+              flight_number: "KE 705",
+              travel_class: "Economy",
+              legroom: "31 in",
+              extensions: [],
             },
           ],
-          deep_link: "https://kiwi.com/booking/abc",
-          fly_duration: "2h 30m",
-          return_duration: "2h 45m",
-          local_departure: "2026-03-01T10:00:00.000Z",
-          local_arrival: "2026-03-01T12:30:00.000Z",
-          utc_departure: "2026-03-01T01:00:00.000Z",
-          utc_arrival: "2026-03-01T03:30:00.000Z",
+          total_duration: 150,
+          price: 350000,
+          type: "Round trip",
+          airline_logo: "https://logo.url",
         },
       ],
-      currency: "KRW",
+      other_flights: [],
     });
 
     const results = await searchFlightsNormalized({
       flyFrom: "ICN",
       flyTo: "NRT",
-      dateFrom: "01/03/2026",
-      dateTo: "31/03/2026",
+      dateFrom: "2026-03-01",
+      dateTo: "2026-03-31",
     });
 
     expect(results).toHaveLength(1);
     expect(results[0]).toEqual({
       price: 350000,
-      airline: "KE",
+      airline: "대한항공",
       flyFrom: "ICN",
       flyTo: "NRT",
-      departureDate: "2026-03-01T10:00:00.000Z",
+      departureDate: "2026-03-01 10:00",
       returnDate: undefined,
-      bookingUrl: "https://kiwi.com/booking/abc",
+      bookingUrl: "https://www.google.com/travel/flights?q=ICN+to+NRT",
       duration: {
         departure: 150,
-        return: 165,
+        return: undefined,
       },
     });
   });
 
   it("빈 결과를 빈 배열로 반환한다", async () => {
     mockSearchFlights.mockResolvedValueOnce({
-      search_id: "empty",
-      data: [],
-      currency: "KRW",
+      search_metadata: { status: "Success" },
+      best_flights: [],
+      other_flights: [],
     });
 
     const results = await searchFlightsNormalized({
       flyFrom: "ICN",
       flyTo: "XYZ",
-      dateFrom: "01/03/2026",
-      dateTo: "31/03/2026",
+      dateFrom: "2026-03-01",
+      dateTo: "2026-03-31",
     });
 
     expect(results).toEqual([]);
   });
 
-  it("왕복 항공편의 returnDate를 포함한다", async () => {
+  it("best_flights와 other_flights를 합쳐서 반환한다", async () => {
     mockSearchFlights.mockResolvedValueOnce({
-      search_id: "round",
-      data: [
+      search_metadata: { status: "Success" },
+      best_flights: [
         {
-          id: "f2",
-          price: 500000,
-          airlines: ["OZ"],
-          route: [
+          flights: [
             {
-              flyFrom: "ICN",
-              flyTo: "NRT",
-              cityFrom: "Seoul",
-              cityTo: "Tokyo",
-              local_departure: "2026-03-01T10:00:00.000Z",
-              local_arrival: "2026-03-01T12:30:00.000Z",
-              airline: "OZ",
-            },
-            {
-              flyFrom: "NRT",
-              flyTo: "ICN",
-              cityFrom: "Tokyo",
-              cityTo: "Seoul",
-              local_departure: "2026-03-08T14:00:00.000Z",
-              local_arrival: "2026-03-08T17:00:00.000Z",
-              airline: "OZ",
+              departure_airport: { name: "인천", id: "ICN", time: "2026-03-01 10:00" },
+              arrival_airport: { name: "나리타", id: "NRT", time: "2026-03-01 12:30" },
+              duration: 150,
+              airplane: "A321",
+              airline: "대한항공",
+              airline_logo: "",
+              flight_number: "KE 705",
+              travel_class: "Economy",
+              legroom: "",
+              extensions: [],
             },
           ],
-          deep_link: "https://kiwi.com/booking/round",
-          fly_duration: "2h 30m",
-          return_duration: "3h 00m",
-          local_departure: "2026-03-01T10:00:00.000Z",
-          local_arrival: "2026-03-01T12:30:00.000Z",
-          utc_departure: "2026-03-01T01:00:00.000Z",
-          utc_arrival: "2026-03-01T03:30:00.000Z",
+          total_duration: 150,
+          price: 350000,
+          type: "Round trip",
+          airline_logo: "",
         },
       ],
-      currency: "KRW",
+      other_flights: [
+        {
+          flights: [
+            {
+              departure_airport: { name: "인천", id: "ICN", time: "2026-03-01 14:00" },
+              arrival_airport: { name: "나리타", id: "NRT", time: "2026-03-01 16:30" },
+              duration: 150,
+              airplane: "B737",
+              airline: "제주항공",
+              airline_logo: "",
+              flight_number: "7C 1101",
+              travel_class: "Economy",
+              legroom: "",
+              extensions: [],
+            },
+          ],
+          total_duration: 150,
+          price: 200000,
+          type: "Round trip",
+          airline_logo: "",
+        },
+      ],
     });
 
     const results = await searchFlightsNormalized({
       flyFrom: "ICN",
       flyTo: "NRT",
-      dateFrom: "01/03/2026",
-      dateTo: "31/03/2026",
+      dateFrom: "2026-03-01",
+      dateTo: "2026-03-31",
       flightType: "round",
     });
 
-    expect(results[0].returnDate).toBe("2026-03-08T14:00:00.000Z");
+    expect(results).toHaveLength(2);
+    expect(results[0].price).toBe(350000);
+    expect(results[1].price).toBe(200000);
+    expect(results[1].airline).toBe("제주항공");
   });
 });
