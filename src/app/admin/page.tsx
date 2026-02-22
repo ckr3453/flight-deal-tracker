@@ -3,6 +3,15 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { AdminDashboard } from "@/components/admin/admin-dashboard";
 
+interface UserRecord {
+  id: string;
+  name: string | null;
+  email: string;
+  role: string;
+  isApproved: boolean;
+  createdAt: Date;
+}
+
 export default async function AdminPage() {
   const session = await auth();
   if (!session?.user) return null;
@@ -37,13 +46,13 @@ export default async function AdminPage() {
       </header>
       <main className="mx-auto max-w-4xl px-4 py-8">
         <AdminDashboard
-          pendingUsers={pendingUsers.map((u) => ({
+          pendingUsers={pendingUsers.map((u: UserRecord) => ({
             id: u.id,
             name: u.name,
             email: u.email,
             createdAt: u.createdAt.toISOString(),
           }))}
-          allUsers={allUsers.map((u) => ({
+          allUsers={allUsers.map((u: UserRecord) => ({
             id: u.id,
             name: u.name,
             email: u.email,
