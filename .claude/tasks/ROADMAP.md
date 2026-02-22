@@ -99,7 +99,22 @@
 
 ---
 
+## Phase 8: 배포 + 프로덕션 설정
+✅ 완료
+- [x] Turso DB 생성 + 스키마 적용 (`scripts/turso-push.mjs`)
+- [x] Resend API 키 발급
+- [x] Vercel 배포 + 환경변수 설정
+- [x] Google OAuth 프로덕션 리디렉션 URI 추가
+- [x] `prisma.config.ts` libsql 어댑터 설정
+- [x] 빌드 스크립트에 `prisma generate` 추가
+- [ ] Tequila API 키 발급 (가입 문제로 보류)
+- [ ] GitHub Actions Secrets 설정 (`CRON_SECRET`, `APP_URL`)
+
+**프로덕션 URL**: https://flight-deal-tracker-uss7.vercel.app
+
+---
+
 ## 추가 검증 단계
-- **단위 테스트**: `npm test`로 전체 통과
+- **단위 테스트**: `npm test`로 전체 통과 (72개)
 - **수동 E2E**: 모니터 생성 → 검색 → 딜 감지 → 이메일
 - **Cron 테스트**: `/api/cron/monitor` 직접 호출 → 파이프라인 동작 확인
