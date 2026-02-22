@@ -28,10 +28,7 @@ function isRetryable(status: number): boolean {
   return status === 429 || status >= 500;
 }
 
-async function fetchWithRetry(
-  url: string,
-  options: RequestInit
-): Promise<Response> {
+async function fetchWithRetry(url: string, options: RequestInit): Promise<Response> {
   let lastError: Error | null = null;
 
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
@@ -69,9 +66,7 @@ async function fetchWithRetry(
     : new TequilaError(0, lastError?.message ?? "네트워크 오류");
 }
 
-export async function searchFlights(
-  params: TequilaSearchParams
-): Promise<TequilaSearchResponse> {
+export async function searchFlights(params: TequilaSearchParams): Promise<TequilaSearchResponse> {
   const searchParams = new URLSearchParams({
     fly_from: params.fly_from,
     fly_to: params.fly_to,
@@ -88,12 +83,9 @@ export async function searchFlights(
     searchParams.set("nights_in_dst_from", String(params.nights_in_dst_from));
   if (params.nights_in_dst_to != null)
     searchParams.set("nights_in_dst_to", String(params.nights_in_dst_to));
-  if (params.adults != null)
-    searchParams.set("adults", String(params.adults));
-  if (params.children != null)
-    searchParams.set("children", String(params.children));
-  if (params.infants != null)
-    searchParams.set("infants", String(params.infants));
+  if (params.adults != null) searchParams.set("adults", String(params.adults));
+  if (params.children != null) searchParams.set("children", String(params.children));
+  if (params.infants != null) searchParams.set("infants", String(params.infants));
 
   const url = `${BASE_URL}/v2/search?${searchParams}`;
   const response = await fetchWithRetry(url, {
@@ -103,9 +95,7 @@ export async function searchFlights(
   return response.json();
 }
 
-export async function searchLocations(
-  term: string
-): Promise<TequilaLocationResponse> {
+export async function searchLocations(term: string): Promise<TequilaLocationResponse> {
   const searchParams = new URLSearchParams({
     term,
     location_types: "city,airport",

@@ -1,9 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  formatDateForTequila,
-  getSearchDateRange,
-  getDaysFromNow,
-} from "./date";
+import { formatDateForTequila, getSearchDateRange, getDaysFromNow } from "./date";
 
 describe("formatDateForTequila", () => {
   it("Date를 DD/MM/YYYY 포맷으로 변환한다", () => {

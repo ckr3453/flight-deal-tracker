@@ -9,10 +9,7 @@ export function formatKRW(amount: number): string {
  * 하락률 계산: (이전 - 현재) / 이전 × 100
  * 양수 = 하락, 음수 = 상승
  */
-export function calculateDropRate(
-  previousPrice: number,
-  currentPrice: number
-): number {
+export function calculateDropRate(previousPrice: number, currentPrice: number): number {
   if (previousPrice === 0) return 0;
   return ((previousPrice - currentPrice) / previousPrice) * 100;
 }

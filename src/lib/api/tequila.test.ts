@@ -66,8 +66,7 @@ describe("searchFlights", () => {
   it("빈 결과를 올바르게 처리한다", async () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: () =>
-        Promise.resolve({ search_id: "empty", data: [], currency: "KRW" }),
+      json: () => Promise.resolve({ search_id: "empty", data: [], currency: "KRW" }),
     });
 
     const result = await searchFlights({
@@ -156,12 +155,10 @@ describe("searchFlights", () => {
   });
 
   it("네트워크 오류 시 재시도한다", async () => {
-    mockFetch
-      .mockRejectedValueOnce(new Error("fetch failed"))
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(MOCK_SEARCH_RESPONSE),
-      });
+    mockFetch.mockRejectedValueOnce(new Error("fetch failed")).mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(MOCK_SEARCH_RESPONSE),
+    });
 
     const result = await searchFlights({
       fly_from: "ICN",

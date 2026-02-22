@@ -34,16 +34,12 @@ function normalizeFlightResult(flight: TequilaFlight): FlightResult {
     bookingUrl: flight.deep_link,
     duration: {
       departure: parseDuration(flight.fly_duration),
-      return: flight.return_duration
-        ? parseDuration(flight.return_duration)
-        : undefined,
+      return: flight.return_duration ? parseDuration(flight.return_duration) : undefined,
     },
   };
 }
 
-export async function searchFlightsNormalized(
-  params: SearchParams
-): Promise<FlightResult[]> {
+export async function searchFlightsNormalized(params: SearchParams): Promise<FlightResult[]> {
   const response = await searchFlights({
     fly_from: params.flyFrom,
     fly_to: params.flyTo,

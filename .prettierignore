@@ -1,0 +1,7 @@
+node_modules
+.next
+out
+build
+.claude
+prisma/migrations
+package-lock.json
