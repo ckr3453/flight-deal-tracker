@@ -233,7 +233,7 @@ describe("rate limiter", () => {
     expect(status.limit).toBe(100);
   });
 
-  it("일일 한도 초과 시 에러를 던진다", () => {
+  it("일일 한도 초과 시 에러를 던진다", async () => {
     // 수동으로 카운터를 한도까지 채움
     for (let i = 0; i < 100; i++) {
       try {
