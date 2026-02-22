@@ -1,0 +1,16 @@
+name: Flight Monitor Cron
+
+on:
+  schedule:
+    - cron: "0 */6 * * *" # 6시간마다
+  workflow_dispatch: # 수동 실행
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger monitor cron
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.APP_URL }}/api/cron/monitor"
