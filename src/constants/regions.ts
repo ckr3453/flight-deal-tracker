@@ -26,4 +26,8 @@ export const POPULAR_REGIONS: Region[] = [
   { code: "CDG", nameKo: "파리", nameEn: "Paris", country: "FR" },
   { code: "LHR", nameKo: "런던", nameEn: "London", country: "GB" },
   { code: "FRA", nameKo: "프랑크푸르트", nameEn: "Frankfurt", country: "DE" },
+  { code: "FCO", nameKo: "로마", nameEn: "Rome", country: "IT" },
+  { code: "BCN", nameKo: "바르셀로나", nameEn: "Barcelona", country: "ES" },
+  { code: "SYD", nameKo: "시드니", nameEn: "Sydney", country: "AU" },
+  { code: "SPN", nameKo: "사이판", nameEn: "Saipan", country: "US" },
 ];

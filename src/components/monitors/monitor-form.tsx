@@ -93,7 +93,7 @@ export function MonitorForm({ onCreated }: MonitorFormProps) {
         <select
           value={flyFrom}
           onChange={(e) => setFlyFrom(e.target.value)}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
         >
           {KOREAN_AIRPORTS.map((a) => (
             <option key={a.code} value={a.code}>
@@ -110,7 +110,7 @@ export function MonitorForm({ onCreated }: MonitorFormProps) {
           value={flyTo}
           onChange={(e) => setFlyTo(e.target.value)}
           required
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
         >
           <option value="">선택하세요</option>
           {POPULAR_REGIONS.map((r) => (
@@ -161,7 +161,7 @@ export function MonitorForm({ onCreated }: MonitorFormProps) {
               max={30}
               value={nightsFrom}
               onChange={(e) => setNightsFrom(parseInt(e.target.value) || 1)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
             />
           </div>
           <div className="flex-1">
@@ -172,7 +172,7 @@ export function MonitorForm({ onCreated }: MonitorFormProps) {
               max={30}
               value={nightsTo}
               onChange={(e) => setNightsTo(parseInt(e.target.value) || 1)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
             />
           </div>
         </div>
@@ -192,7 +192,7 @@ export function MonitorForm({ onCreated }: MonitorFormProps) {
               >
                 -
               </button>
-              <span className="w-6 text-center text-sm">{adults}</span>
+              <span className="w-6 text-center text-sm text-gray-900">{adults}</span>
               <button
                 type="button"
                 onClick={() => setAdults(Math.min(9, adults + 1))}
@@ -212,7 +212,7 @@ export function MonitorForm({ onCreated }: MonitorFormProps) {
               >
                 -
               </button>
-              <span className="w-6 text-center text-sm">{children}</span>
+              <span className="w-6 text-center text-sm text-gray-900">{children}</span>
               <button
                 type="button"
                 onClick={() => setChildren(Math.min(3, children + 1))}
@@ -232,7 +232,7 @@ export function MonitorForm({ onCreated }: MonitorFormProps) {
               >
                 -
               </button>
-              <span className="w-6 text-center text-sm">{infants}</span>
+              <span className="w-6 text-center text-sm text-gray-900">{infants}</span>
               <button
                 type="button"
                 onClick={() => setInfants(Math.min(3, infants + 1))}
@@ -258,7 +258,7 @@ export function MonitorForm({ onCreated }: MonitorFormProps) {
           value={maxPrice}
           onChange={(e) => setMaxPrice(e.target.value)}
           placeholder="예: 300000"
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
         />
         {maxPrice && (
           <p className="mt-1 text-xs text-gray-500">
