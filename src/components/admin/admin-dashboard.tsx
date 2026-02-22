@@ -110,7 +110,7 @@ export function AdminDashboard({
             <tbody>
               {allUsers.map((user) => (
                 <tr key={user.id} className="border-b last:border-0">
-                  <td className="px-4 py-2">{user.name || "-"}</td>
+                  <td className="px-4 py-2 text-gray-900">{user.name || "-"}</td>
                   <td className="px-4 py-2 text-gray-600">{user.email}</td>
                   <td className="px-4 py-2">
                     <span
@@ -123,7 +123,9 @@ export function AdminDashboard({
                       {user.isApproved ? "승인" : "대기"}
                     </span>
                   </td>
-                  <td className="px-4 py-2 text-gray-600">{user.role}</td>
+                  <td className="px-4 py-2 text-gray-600">
+                    {user.role === "admin" ? "관리자" : "사용자"}
+                  </td>
                 </tr>
               ))}
             </tbody>
