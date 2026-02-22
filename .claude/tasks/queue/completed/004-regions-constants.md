@@ -7,9 +7,9 @@
 `src/constants/regions.ts` - 한국인 인기 해외 여행지 정의
 
 ## 완료 기준
-- [ ] 주요 20개 지역 (도시 코드, 한글명, 영문명)
-- [ ] TypeScript 타입 정의
-- [ ] 자동완성용 배열 export
+- [x] 주요 20개 지역 (도시 코드, 한글명, 영문명)
+- [x] TypeScript 타입 정의
+- [x] 자동완성용 배열 export
 
 ## 지역 예시
 - 도쿄 (NRT, TYO)
@@ -24,3 +24,7 @@
 - 홀로룰루 (HNL)
 - 미국 (LAX, SFO, JFK)
 - 유럽 (CDG, LHR, FRA)
+
+---
+
+**completed: 2026-02-22**

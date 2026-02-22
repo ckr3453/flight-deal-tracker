@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { formatDateForTequila, getSearchDateRange, getDaysFromNow } from "./date";
+import {
+  formatDateForTequila,
+  getSearchDateRange,
+  getDaysFromNow,
+  convertNightsToDateRange,
+  getRecentDaysRange,
+} from "./date";
 
 describe("formatDateForTequila", () => {
   it("Date를 DD/MM/YYYY 포맷으로 변환한다", () => {
@@ -47,5 +53,37 @@ describe("getDaysFromNow", () => {
     const now = new Date(2026, 1, 22);
     const result = getDaysFromNow(0, now);
     expect(result.getDate()).toBe(22);
+  });
+});
+
+describe("convertNightsToDateRange", () => {
+  it("3박4일 → 출발일~3일 후 귀국일을 반환한다", () => {
+    const departure = new Date(2026, 1, 22);
+    const { dateFrom, dateTo } = convertNightsToDateRange(3, departure);
+    expect(dateFrom).toBe("22/02/2026");
+    expect(dateTo).toBe("25/02/2026");
+  });
+
+  it("1박2일도 올바르게 처리한다", () => {
+    const departure = new Date(2026, 11, 31);
+    const { dateFrom, dateTo } = convertNightsToDateRange(1, departure);
+    expect(dateFrom).toBe("31/12/2026");
+    expect(dateTo).toBe("01/01/2027");
+  });
+});
+
+describe("getRecentDaysRange", () => {
+  it("최근 7일 범위를 반환한다", () => {
+    const now = new Date(2026, 1, 22);
+    const { start, end } = getRecentDaysRange(7, now);
+    expect(start.getDate()).toBe(15);
+    expect(end).toBe(now);
+  });
+
+  it("최근 0일이면 같은 날을 반환한다", () => {
+    const now = new Date(2026, 1, 22);
+    const { start, end } = getRecentDaysRange(0, now);
+    expect(start.getDate()).toBe(22);
+    expect(end).toBe(now);
   });
 });

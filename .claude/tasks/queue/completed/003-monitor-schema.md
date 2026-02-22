@@ -7,10 +7,10 @@
 `src/lib/validators/monitor.schema.ts` - Zod 스키마로 모니터 입력값 검증
 
 ## 완료 기준
-- [ ] `createMonitorSchema()` - 모니터 생성 시 검증
-- [ ] `updateMonitorSchema()` - 부분 업데이트 검증
-- [ ] 에러 메시지 한글화
-- [ ] 단위 테스트 통과
+- [x] `createMonitorSchema()` - 모니터 생성 시 검증
+- [x] `updateMonitorSchema()` - 부분 업데이트 검증
+- [x] 에러 메시지 한글화
+- [x] 단위 테스트 통과
 
 ## 검증 규칙
 - `flyFrom`: 공항 코드 (3글자, 대문자)
@@ -29,3 +29,7 @@
 - 필수 필드 누락 → 에러
 - 범위 초과 → 에러
 ```
+
+---
+
+**completed: 2026-02-22**

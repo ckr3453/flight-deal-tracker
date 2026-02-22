@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { searchFlights, searchLocations, TequilaError } from "./tequila";
+import {
+  searchFlights,
+  searchLocations,
+  TequilaError,
+  resetRateLimit,
+  getRateLimitStatus,
+} from "./tequila";
 
 const mockFetch = vi.fn();
 vi.stubGlobal("fetch", mockFetch);
@@ -7,6 +13,7 @@ vi.stubGlobal("fetch", mockFetch);
 beforeEach(() => {
   vi.clearAllMocks();
   vi.stubEnv("TEQUILA_API_KEY", "test-api-key");
+  resetRateLimit();
 });
 
 const MOCK_SEARCH_RESPONSE = {
@@ -204,5 +211,84 @@ describe("searchLocations", () => {
     const url = mockFetch.mock.calls[0][0] as string;
     expect(url).toContain("locations/query");
     expect(url).toContain("locale=ko");
+  });
+});
+
+describe("rate limiter", () => {
+  it("호출 횟수를 추적한다", async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(MOCK_SEARCH_RESPONSE),
+    });
+
+    await searchFlights({
+      fly_from: "ICN",
+      fly_to: "NRT",
+      date_from: "01/03/2026",
+      date_to: "31/03/2026",
+    });
+
+    const status = getRateLimitStatus();
+    expect(status.count).toBe(1);
+    expect(status.limit).toBe(100);
+  });
+
+  it("일일 한도 초과 시 에러를 던진다", () => {
+    // 수동으로 카운터를 한도까지 채움
+    for (let i = 0; i < 100; i++) {
+      try {
+        // checkRateLimit 간접 호출을 위해 resetRateLimit 없이 searchFlights 호출
+        // 대신 getRateLimitStatus로 확인
+      } catch {
+        // ignore
+      }
+    }
+
+    // resetRateLimit 후 100번 호출해서 한도 도달 시뮬레이션
+    resetRateLimit();
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(MOCK_SEARCH_RESPONSE),
+    });
+
+    // 100번 호출
+    const promises = Array.from({ length: 100 }, () =>
+      searchFlights({
+        fly_from: "ICN",
+        fly_to: "NRT",
+        date_from: "01/03/2026",
+        date_to: "31/03/2026",
+      })
+    );
+
+    // 101번째 호출은 에러
+    await expect(
+      Promise.all(promises).then(() =>
+        searchFlights({
+          fly_from: "ICN",
+          fly_to: "NRT",
+          date_from: "01/03/2026",
+          date_to: "31/03/2026",
+        })
+      )
+    ).rejects.toThrow("일일 API 호출 한도 초과");
+  });
+
+  it("resetRateLimit()이 카운터를 초기화한다", async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(MOCK_SEARCH_RESPONSE),
+    });
+
+    await searchFlights({
+      fly_from: "ICN",
+      fly_to: "NRT",
+      date_from: "01/03/2026",
+      date_to: "31/03/2026",
+    });
+    expect(getRateLimitStatus().count).toBe(1);
+
+    resetRateLimit();
+    expect(getRateLimitStatus().count).toBe(0);
   });
 });

@@ -8,6 +8,10 @@
 `src/lib/api/flight-search.ts` - Tequila 래핑, 결과 정규화
 
 ## 완료 기준
-- [ ] `searchFlights()` - Tequila 결과 → FlightResult[] 변환
-- [ ] 빈 결과 처리
-- [ ] 단위 테스트 통과
+- [x] `searchFlights()` - Tequila 결과 → FlightResult[] 변환
+- [x] 빈 결과 처리
+- [x] 단위 테스트 통과
+
+---
+
+**completed: 2026-02-22**

@@ -7,6 +7,35 @@ import type {
 const BASE_URL = "https://tequila-api.kiwi.com";
 const MAX_RETRIES = 3;
 const RETRY_BASE_DELAY = 1000;
+const DAILY_RATE_LIMIT = 100;
+
+// 일일 API 호출 카운터 (서버 재시작 시 리셋)
+let dailyCallCount = 0;
+let lastResetDate = new Date().toDateString();
+
+function checkRateLimit(): void {
+  const today = new Date().toDateString();
+  if (today !== lastResetDate) {
+    dailyCallCount = 0;
+    lastResetDate = today;
+  }
+  if (dailyCallCount >= DAILY_RATE_LIMIT) {
+    throw new TequilaError(429, `일일 API 호출 한도 초과 (${DAILY_RATE_LIMIT}회)`);
+  }
+  dailyCallCount++;
+}
+
+export function getRateLimitStatus(): { count: number; limit: number } {
+  const today = new Date().toDateString();
+  if (today !== lastResetDate) {
+    return { count: 0, limit: DAILY_RATE_LIMIT };
+  }
+  return { count: dailyCallCount, limit: DAILY_RATE_LIMIT };
+}
+
+export function resetRateLimit(): void {
+  dailyCallCount = 0;
+}
 
 export class TequilaError extends Error {
   constructor(
@@ -67,6 +96,7 @@ async function fetchWithRetry(url: string, options: RequestInit): Promise<Respon
 }
 
 export async function searchFlights(params: TequilaSearchParams): Promise<TequilaSearchResponse> {
+  checkRateLimit();
   const searchParams = new URLSearchParams({
     fly_from: params.fly_from,
     fly_to: params.fly_to,
@@ -96,6 +126,7 @@ export async function searchFlights(params: TequilaSearchParams): Promise<Tequil
 }
 
 export async function searchLocations(term: string): Promise<TequilaLocationResponse> {
+  checkRateLimit();
   const searchParams = new URLSearchParams({
     term,
     location_types: "city,airport",
