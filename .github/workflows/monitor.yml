@@ -2,7 +2,7 @@ name: Flight Monitor Cron
 
 on:
   schedule:
-    - cron: "0 */6 * * *" # 6시간마다
+    - cron: "0 0 * * *" # 매일 자정(UTC) = 한국시간 오전 9시
   workflow_dispatch: # 수동 실행
 
 jobs:
